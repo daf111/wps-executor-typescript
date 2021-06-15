@@ -1,13 +1,16 @@
-import "./assets/css/normalize.css";
+import { PostmanHTTP } from "./infrastructure/PostmanHTTP";
+import { WPS } from "./WPS";
+import { WPSContour } from "./WPSContour";
 
-import { getUsers } from "./users";
+export default class WPSFactory {
 
-export async function printUsers(): Promise<HTMLElement> {
-  const users = await getUsers();
-  const element = document.createElement("div");
-  element.innerHTML = `<h2>Current users</h2>
-    ${users.map((user) => `<div>${user.name}</div>`).join("")}`;
-  return element;
+  constructor() {}
+
+  createWPS(wpsName: string): WPS {
+    switch(wpsName) {
+      case 'countour':  return new WPSContour(new PostmanHTTP());
+      default:          throw new TypeError("Invalid WPS name");
+    }
+  }
+
 }
-
-printUsers().then((element) => document.body.appendChild(element));
